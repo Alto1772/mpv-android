@@ -37,6 +37,7 @@ build_prefix() {
 	for x in ${dep_mpv[@]}; do
 		msg "Building $x"
 		./buildall.sh $x
+		./buildall.sh $x --arch arm64
 	done
 
 	if [[ "$CACHE_MODE" == github && -n "$GITHUB_TOKEN" ]]; then
@@ -87,8 +88,14 @@ msg "Building mpv"
 	[ ! -f deps/mpv/_build/config.h ] && cat deps/mpv/_build/meson-logs/meson-log.txt
 	exit 1
 }
+./buildall.sh -n mpv --arch arm64 || {
+	# show logfile if configure failed
+	[ ! -f deps/mpv/_build-arm64/config.h ] && cat deps/mpv/_build-arm64/meson-logs/meson-log.txt
+	exit 1
+}
 
 msg "Building mpv-android"
 ./buildall.sh -n
+./buildall.sh -n --arch arm64
 
 exit 0
